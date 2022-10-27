@@ -7,7 +7,7 @@ from tkinter import ttk
 
 # defining the grid
 root = Tk()
-root.title("SPARKLE ENGINE ALPHA V1")
+root.title("SPARKLE ENGINE ALPHA V1.1")
 frm = ttk.Frame(root, padding=10)
 outfrm = ttk.Frame(root, padding=5)
 
@@ -23,12 +23,19 @@ frm.rowconfigure(1)
 frm.rowconfigure(2)
 root.geometry(newGeometry="280x180")
 
-# power level guts go here
+sparkles = ["`", "*", "-", ".", "'", '"', ",", "@", "~"]
+colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+
+# Global variables. I will never apologize.
 powerlevel = DoubleVar()
-
 powerlevel.set(100)
+magout = StringVar()
+color = StringVar()
+magout.set('.')
+color.set('black')
 
 
+# power level guts go here
 def plus():
     power = int(powerlevel.get())
     power += 1
@@ -41,18 +48,7 @@ def minus():
     powerlevel.set(power)
 
 
-# sparkle engine goes here
-
-sparkles = ["`", "*", "-", ".", "'", '"', ",", "@", "~"]
-colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
-
-# Global variables. I will never apologize.
-magout = StringVar()
-color = StringVar()
-magout.set('.')
-color.set('black')
-
-
+# sparkle generator goes here
 def magic():
     ingredients = []
     mana = magout.get()
@@ -71,6 +67,8 @@ def magic():
         box["fg"] = color.get()
     else:
         color.set('black')
+        vibe.set(vibe.get() + random.randint(-70, 70))
+
     magout.set(cast)
     """"
     this is for debugging magic()
@@ -82,8 +80,9 @@ def magic():
     """
 
 
-vibe = tkinter.DoubleVar()
+vibe = tkinter.IntVar()
 
+# the vibe meter
 w = Scale(frm, from_=1, to=200, orient=HORIZONTAL, variable=vibe)
 w.grid(column=1, row=5)
 
@@ -91,6 +90,7 @@ w.grid(column=1, row=5)
 def harmony():
     alpha = math.floor(powerlevel.get())
     beta = math.floor(vibe.get())
+    box["fg"]='black'
     print(alpha, beta)
     if alpha > beta:
         index = range(beta, alpha)
