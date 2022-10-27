@@ -1,117 +1,146 @@
+# import time
 import tkinter
 import random
 import math
 from tkinter import *
 from tkinter import ttk
 
-##defining the grid
+# defining the grid
 root = Tk()
+root.title("SPARKLE ENGINE ALPHA V1")
 frm = ttk.Frame(root, padding=10)
-outfrm=ttk.Frame(root, padding=5)
+outfrm = ttk.Frame(root, padding=5)
 
-frm.grid(row=1)
-outfrm.grid(row=0, columnspan=3)
+frm.grid(row=1, column=1)
+outfrm.grid(row=0, column=1, columnspan=3)
 
-frm.columnconfigure(0, weight=0)
-frm.columnconfigure(1, weight=1)
-frm.columnconfigure(2, weight=0)
-frm.rowconfigure(0, weight=0)
-frm.rowconfigure(1,weight=1)
-frm.rowconfigure(2,weight=1)
-root.geometry(newGeometry="280x170")
+outfrm.columnconfigure(1, weight=1)
+frm.columnconfigure(0)
+frm.columnconfigure(1)
+frm.columnconfigure(2)
+frm.rowconfigure(0)
+frm.rowconfigure(1)
+frm.rowconfigure(2)
+root.geometry(newGeometry="280x180")
+
+# power level guts go here
+powerlevel = DoubleVar()
+
+powerlevel.set(100)
 
 
-##power level guts go here
-powerlevel=StringVar()
-power = 100
-
-powerlevel.set(str(power))
 def plus():
     power = int(powerlevel.get())
-    power +=1
-    powerlevel.set(str(power))
+    power += 1
+    powerlevel.set(power)
+
+
 def minus():
     power = int(powerlevel.get())
-    power -=1
-    powerlevel.set(str(power))
+    power -= 1
+    powerlevel.set(power)
 
-##sparkle engine goes here
 
-sparkles = ["`","*","-",".","'",'"',",","@"]
+# sparkle engine goes here
+
+sparkles = ["`", "*", "-", ".", "'", '"', ",", "@", "~"]
+colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+
+# Global variables. I will never apologize.
 magout = StringVar()
+color = StringVar()
 magout.set('.')
+color.set('black')
+
 
 def magic():
-    ingredients=[]
-    mana=magout.get()
-    spell =random.choice(sparkles)
+    ingredients = []
+    mana = magout.get()
+    spell = random.choice(sparkles)
     ingredients.append(mana)
     ingredients.append(spell)
-
-    if len(ingredients[0])>8:
-        drain=[]
+    if len(ingredients[0]) > 8:
+        drain = []
         for i in ingredients[0]:
             drain.append(i)
         drain.remove(drain[0])
-        ingredients[0]=''.join(drain)
+        ingredients[0] = ''.join(drain)
     cast = ''.join(ingredients)
+    if r1_v.get():
+        color.set(random.choice(colors))
+        box["fg"] = color.get()
+    else:
+        color.set('black')
+    magout.set(cast)
+    """"
+    this is for debugging magic()
     print(cast)
     print('**********')
     print(ingredients[0])
     print(len(ingredients[0]))
-    magout.set(cast)
+    print(color.get())
+    """
 
-##widgets to populate the grid
-box = tkinter.Message(outfrm, textvariable=magout)
-label_0 = Label(frm, text = "power level:")
+
+vibe = tkinter.DoubleVar()
+
+w = Scale(frm, from_=1, to=200, orient=HORIZONTAL, variable=vibe)
+w.grid(column=1, row=5)
+
+
+def harmony():
+    alpha = math.floor(powerlevel.get())
+    beta = math.floor(vibe.get())
+    print(alpha, beta)
+    if alpha > beta:
+        index = range(beta, alpha)
+    elif alpha < beta:
+        index = range(alpha, beta)
+    elif alpha == beta:
+        harmonic = 100
+        index = [100]
+        powerlevel.set(harmonic)
+        vibe.set(harmonic)
+    n = len(index)
+    if n % 2 == 0:
+        median1 = index[n // 2]
+        median2 = index[n // 2 - 1]
+        harmonic = (median1 + median2) // 2
+
+    else:
+        harmonic = math.floor(index[(n // 2)])
+
+    if harmonic > 200:
+        harmonic = 200
+    print(harmonic)
+    print(r1_v.get())
+
+    powerlevel.set(harmonic)
+    vibe.set(harmonic)
+
+
+# widgets to populate the grid
+box = tkinter.Message(outfrm, textvariable=magout, width=93, fg=color.get())
+
+label_0 = Label(frm, text="power level:")
 label_1 = Label(frm, textvariable=powerlevel)
 
-##positioning widgets
+# positioning widgets
 
 box.grid(column=0, row=0, columnspan=3)
-label_0.grid(column=1,row=1)
-label_1.grid(column=1,row=2)
+label_0.grid(column=1, row=1)
+label_1.grid(column=1, row=2)
 
-
-#buttons go here
+# buttons go here
 ttk.Button(frm, text="+", command=plus).grid(column=0, row=3)
 ttk.Button(frm, text="-", command=minus).grid(column=2, row=3)
-ttk.Button(frm, text="HARMONIZE").grid(column=1, row=3)
-ttk.Button(frm, text="sparkle", command=magic).grid(column=1,row=4)
+ttk.Button(frm, text="HARMONIZE", command=harmony).grid(column=1, row=3)
+ttk.Button(frm, text="CAST", command=magic).grid(column=1, row=4)
 
-## a slider, because why not?
-w = Scale(frm, from_=0, to=200, orient=HORIZONTAL).grid(column=1, row=5)
-root.mainloop()
-    if len(ingredients[0])>8:
-        drain=[]
-        for i in ingredients[0]:
-            drain.append(i)
-        drain.remove(drain[0])
-        ingredients[0]=''.join(drain)
-    cast = ''.join(ingredients)
-    print(cast)
-    print('**********')
-    print(ingredients[0])
-    print(len(ingredients[0]))
-    magout.set(cast)
+r1_v = tkinter.BooleanVar()
 
-##widgets to populate the grid
-box = tkinter.Message(frm, textvariable=magout)
-label_0 = Label(frm, text = "power level:")
-label_1 = Label(frm, textvariable=powerlevel)
-
-##positioning widgets
-
-box.grid(column=0, row=0, columnspan=3)
-label_0.grid(column=1,row=1)
-label_1.grid(column=1,row=2)
-
-
-#buttons go here
-ttk.Button(frm, text="+", command=plus).grid(column=0, row=3)
-ttk.Button(frm, text="-", command=minus).grid(column=2, row=3)
-ttk.Button(frm, text="sparkle", command=magic).grid(column=1,row=4)
-
-## a slider, because why not?
-w = Scale(frm, from_=0, to=200, orient=HORIZONTAL).grid(column=1, row=5)
+r1 = ttk.Radiobutton(frm, variable=r1_v, value=0)
+r2 = ttk.Radiobutton(frm, variable=r1_v, value=1)
+r1.grid(row=4, column=0)
+r2.grid(row=4, column=2)
 root.mainloop()
